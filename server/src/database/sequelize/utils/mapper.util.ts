@@ -1,7 +1,7 @@
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 
 /**
- * A function to convert an object into a DTO models, automatically discarding unnecessary fields.
+ * A function to convert an object into a DTO model, automatically discarding unnecessary fields.
  * @param cls - class DTO
  * @param plain - object (entity)
  * @returns Object in the desired format
