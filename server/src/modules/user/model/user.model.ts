@@ -3,6 +3,7 @@ import { CreationOptional, InferAttributes, InferCreationAttributes, UUIDV4 } fr
 import { BeforeCreate, BeforeUpdate, Column, DataType, Model, Table } from 'sequelize-typescript';
 
 
+
 @Table({
 	tableName: 'users',
 	timestamps: false,
@@ -32,14 +33,11 @@ export default class User extends Model<
 	username: string;
 
 	@Column({
-		type: DataType.STRING
+		type: DataType.STRING,
+		allowNull: false,
+		unique: true
 	})
-	firstname?: string;
-
-	@Column({
-		type: DataType.STRING
-	})
-	lastname?: string;
+	email: string;
 
 	@Column({
 		type: DataType.STRING,
@@ -49,20 +47,7 @@ export default class User extends Model<
 
 	@Column({
 		type: DataType.STRING,
-		allowNull: false,
-		unique: true
-	})
-	email: string;
-
-	@Column({
-		type: DataType.STRING,
-		allowNull: true,
-		unique: true
-	})
-	phone?: string;
-
-	@Column({
-		type: DataType.STRING
+		allowNull: true
 	})
 	picture?: string;
 

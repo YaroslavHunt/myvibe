@@ -1,17 +1,15 @@
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '@/app/app.module';
-import { setupSwagger } from '@/config/swagger.config';
-import { WinstonLoggerService } from '@/libs/logger/winston/logger.service';
-import { LoggingInterceptor } from './libs/logger/winston/logger-interceptor.service';
-import { GlobalExceptionFilter } from '@/libs/filters/error/global-exception.filter';
+import { setupSwagger } from '@/app/config/swagger.config';
+import { LoggingInterceptor } from '@/libs/logger/logging.interceptor';
+import { HttpExceptionFilter } from './libs/filters/http-exception.filter';
 
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+	const app = await NestFactory.create(AppModule, { logger: new Logger() });
 	const config = app.get(ConfigService);
-	const logger = app.get(WinstonLoggerService);
 	const port = config.getOrThrow<number>('APP_PORT');
 
 	// Pipes
@@ -23,10 +21,11 @@ async function bootstrap() {
 		})
 	);
 
-	// Logger
-	app.useLogger(logger);
-	app.useGlobalInterceptors(new LoggingInterceptor(logger));
-	app.useGlobalFilters(new GlobalExceptionFilter(logger));
+	// Logger Interceptor
+	app.useGlobalInterceptors(new LoggingInterceptor())
+
+	// Global Exception Filter
+	app.useGlobalFilters(new HttpExceptionFilter());
 
 	// API docs
 	app.setGlobalPrefix(config.getOrThrow<string>('APP_GLOBAL_PREFIX'));

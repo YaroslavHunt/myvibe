@@ -2,7 +2,6 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { GetObjectCommand, S3 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { ConfigService } from '@nestjs/config';
-import { WinstonLoggerService } from '@/libs/logger/winston/logger.service';
 
 
 @Injectable()
@@ -13,7 +12,6 @@ export class S3bucketService {
 
 	constructor(
 		private readonly configService: ConfigService,
-		private readonly logger: WinstonLoggerService
 	) {
 		this.region = this.configService.getOrThrow<string>('AWS_REGION');
 		this.bucket = this.configService.getOrThrow<string>('AWS_BUCKET_NAME');
@@ -42,7 +40,6 @@ export class S3bucketService {
 				null
 			);
 		} catch (e) {
-			this.logger.error('Failed to generate file URL', e);
 			throw new InternalServerErrorException(
 				'Failed to generate file URL'
 			);
